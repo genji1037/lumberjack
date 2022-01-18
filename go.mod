@@ -1,4 +1,4 @@
-module github.com/natefinch/lumberjack
+module github.com/genji1037/lumberjack
 
 require (
 	github.com/BurntSushi/toml v0.3.1
