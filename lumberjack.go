@@ -196,11 +196,9 @@ func (l *Logger) Rotate() error {
 // (if it exists), opens a new file with the original filename, and then runs
 // post-rotation processing and removal.
 func (l *Logger) rotate() error {
-	fName := l.file.Name()
 	if err := l.close(); err != nil {
 		return err
 	}
-	go l.RotateHook(fName)
 	if err := l.openNew(); err != nil {
 		return err
 	}
@@ -227,7 +225,7 @@ func (l *Logger) openNew() error {
 		if err := os.Rename(name, newname); err != nil {
 			return fmt.Errorf("can't rename log file: %s", err)
 		}
-
+		go l.RotateHook(newname)
 		// this is a no-op anywhere but linux
 		if err := chown(name, info); err != nil {
 			return err
