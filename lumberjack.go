@@ -189,19 +189,18 @@ func (l *Logger) close() error {
 func (l *Logger) Rotate() error {
 	l.mu.Lock()
 	defer l.mu.Unlock()
-	fName := l.file.Name()
-	err := l.rotate()
-	l.RotateHook(fName)
-	return err
+	return l.rotate()
 }
 
 // rotate closes the current file, moves it aside with a timestamp in the name,
 // (if it exists), opens a new file with the original filename, and then runs
 // post-rotation processing and removal.
 func (l *Logger) rotate() error {
+	fName := l.file.Name()
 	if err := l.close(); err != nil {
 		return err
 	}
+	go l.RotateHook(fName)
 	if err := l.openNew(); err != nil {
 		return err
 	}
